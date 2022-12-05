@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">networkingpr</string>
+    <string name="share">Share</string>
+    <string name="news_title">News Title</string>
+    <string name="news_description">News Description</string>
+    <string name="like">Like</string>
+    <string name="todo">TODO</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="render_images">Render Images</string>
+</resources>
