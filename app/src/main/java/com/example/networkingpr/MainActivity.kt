@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.CompoundButton
 import android.widget.Switch
 import android.widget.ToggleButton
@@ -25,6 +26,8 @@ object global {
 
     var darktheme = true
     var renderimages = true
+    var source = "Livemint"
+    var position = 0
 
 }
 
@@ -56,8 +59,6 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         navView = findViewById(R.id.navView)
-
-
 
 
         darktoggleswitch = navView.menu.findItem(R.id.darkthemetoggle)
@@ -120,9 +121,30 @@ class MainActivity : AppCompatActivity() {
         rv.adapter = adapter
         rv.layoutManager = LinearLayoutManager(this@MainActivity)
         getNews()
+        global.position =  (rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition();
+
+
+
+
+        rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                var tempPos = (rv.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+                if(tempPos>=0){
+                    global.position = tempPos
+                    var tempTitle = articles[global.position].source.name
+                    if((tempTitle.length>4) && (tempTitle.substring(tempTitle.length-4, tempTitle.length) ==".com")){
+                        tempTitle = tempTitle.substring(0, tempTitle.length -4)
+                    }
+                    title = tempTitle
+                }
+            }
+        })
+
 
 
     }
+
+
 
     private fun getNews() {
         val news: Call<News> = NewsService.newsInstance.getHeadlines("tech")
@@ -154,5 +176,6 @@ class MainActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+
 
 }
