@@ -60,7 +60,10 @@ class NewsAdapter(val context: Context, val articles: List<Article>) :
         holder.newsDescription.text = article.description
 
         if(global.renderimages){
+            holder.newsImage.visibility = View.VISIBLE
             Glide.with(context).load(article.urlToImage).into(holder.newsImage)
+        }else{
+            holder.newsImage.visibility = View.GONE
         }
 
 

@@ -1,13 +1,17 @@
 package com.example.networkingpr
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
+import android.widget.CompoundButton
+import android.widget.Switch
 import android.widget.ToggleButton
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.NightMode
+import androidx.appcompat.widget.SwitchCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +19,7 @@ import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 object global {
 
@@ -30,18 +35,21 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var drawerLayout: DrawerLayout
     lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+    lateinit var darktoggleswitch : MenuItem
+    lateinit var renderImagesToggleButton : MenuItem
     private lateinit var navView: NavigationView
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        global.darktheme = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
 
         drawerLayout = findViewById(R.id.drawerLayout)
         actionBarDrawerToggle =
             ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
-
 
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
@@ -50,31 +58,60 @@ class MainActivity : AppCompatActivity() {
         navView = findViewById(R.id.navView)
 
 
-        navView.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.darkthemetoggle -> {
-                    global.darktheme = findViewById<ToggleButton>(R.id.darkthemetoggle).isActivated
 
-                    if (!global.darktheme) {
+
+        darktoggleswitch = navView.menu.findItem(R.id.darkthemetoggle)
+        darktoggleswitch.isChecked = global.darktheme
+        renderImagesToggleButton = navView.menu.findItem(R.id.renderimagetoggle)
+        renderImagesToggleButton.isChecked = global.renderimages
+
+//        navView.setNavigationItemSelectedListener(this)
+
+
+        darktoggleswitch.setOnMenuItemClickListener {
+            global.darktheme = !global.darktheme
+            if (!global.darktheme) {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     } else {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     }
-                }
-                R.id.renderimagetoggle -> {
-                    global.renderimages =
-                        findViewById<ToggleButton>(R.id.renderimagetoggle).isActivated
-                    Log.e("#toggleGS12@@", global.renderimages.toString())
-                }
-
-                R.id.nav_account -> {
-                    Log.e("#toggleGS12@@", "my acc pressed")
-                }
-
-
-            }
             true
         }
+
+
+        renderImagesToggleButton.setOnMenuItemClickListener {
+            global.renderimages = !global.renderimages
+            renderImagesToggleButton.isChecked = global.renderimages
+            true
+        }
+
+
+
+//        navView.setNavigationItemSelectedListener {
+//            when (it.itemId) {
+////                R.id.darkthemetoggle -> {
+////                    global.darktheme = findViewById<ToggleButton>(R.id.darkthemetoggle).isActivated
+////
+////                    if (!global.darktheme) {
+////                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+////                    } else {
+////                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+////                    }
+////                }
+////                R.id.renderimagetoggle -> {
+////                    global.renderimages =
+////                        findViewById<ToggleButton>(R.id.renderimagetoggle).isActivated
+////                    Log.e("#toggleGS12@@", global.renderimages.toString())
+////                }
+//
+//                R.id.nav_account -> {
+//                    Log.e("#toggleGS12@@", "my acc pressed")
+//                }
+//
+//
+//            }
+//            true
+//        }
 
 
 
