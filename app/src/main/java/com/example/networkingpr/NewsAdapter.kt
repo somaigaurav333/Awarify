@@ -70,7 +70,7 @@ class NewsAdapter(val context: Context, val articles: List<Article>) :
 
         if(global.renderimages){
             holder.newsImage.visibility = View.VISIBLE
-            Glide.with(context).load(article.urlToImage ).placeholder(R.drawable.ic_baseline_android_loading).error(R.drawable.ic_baseline_android_error).into(holder.newsImage)
+                Glide.with(context).load(article.urlToImage ).placeholder(R.drawable.ic_baseline_android_loading).error(R.drawable.ic_baseline_android_error).into(holder.newsImage)
         }else{
             holder.newsImage.visibility = View.GONE
         }

@@ -1,5 +1,7 @@
 package com.example.networkingpr
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -26,16 +28,15 @@ object global {
 
     var darktheme = true
     var renderimages = true
-    var source = "Livemint"
     var position = 0
 
 }
 
 
+
 class MainActivity : AppCompatActivity() {
     lateinit var adapter: NewsAdapter
     private var articles = mutableListOf<Article>()
-
     lateinit var drawerLayout: DrawerLayout
     lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     lateinit var darktoggleswitch : MenuItem
@@ -48,7 +49,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        global.darktheme = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
+        val userPreferences = getSharedPreferences(getString(R.string.userpref) , Context.MODE_PRIVATE )
+        val userPreferencesEditor : SharedPreferences.Editor = userPreferences.edit()
+
+        if(userPreferences.contains("darktheme")){
+            if(userPreferences.getBoolean("darktheme", true)){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                global.darktheme = true
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                global.darktheme = false
+            }
+        }else{
+            global.darktheme = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
+            userPreferencesEditor.putBoolean("darktheme", global.darktheme)
+            userPreferencesEditor.apply()
+        }
+
+        if(userPreferences.contains("renderimages")){
+            global.renderimages = userPreferences.getBoolean("renderimages", true)
+        }
 
         drawerLayout = findViewById(R.id.drawerLayout)
         actionBarDrawerToggle =
@@ -73,9 +93,14 @@ class MainActivity : AppCompatActivity() {
             global.darktheme = !global.darktheme
             if (!global.darktheme) {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        userPreferencesEditor.putBoolean("darktheme", false)
+                        userPreferencesEditor.apply()
                     } else {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    }
+                        userPreferencesEditor.putBoolean("darktheme", true)
+                        userPreferencesEditor.apply()
+
+            }
             true
         }
 
@@ -83,6 +108,8 @@ class MainActivity : AppCompatActivity() {
         renderImagesToggleButton.setOnMenuItemClickListener {
             global.renderimages = !global.renderimages
             renderImagesToggleButton.isChecked = global.renderimages
+            userPreferencesEditor.putBoolean("renderimages", global.renderimages)
+            userPreferencesEditor.apply()
             true
         }
 
@@ -121,14 +148,12 @@ class MainActivity : AppCompatActivity() {
         rv.adapter = adapter
         rv.layoutManager = LinearLayoutManager(this@MainActivity)
         getNews()
-        global.position =  (rv.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition();
-
 
 
 
         rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                var tempPos = (rv.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+                val tempPos = (rv.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
                 if(tempPos>=0){
                     global.position = tempPos
                     var tempTitle = articles[global.position].source.name
