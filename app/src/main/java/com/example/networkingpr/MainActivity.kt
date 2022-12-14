@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnClickListener
+import android.widget.Button
 import android.widget.CompoundButton
+import android.widget.RadioGroup.OnCheckedChangeListener
 import android.widget.Switch
 import android.widget.ToggleButton
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -39,8 +43,8 @@ class MainActivity : AppCompatActivity() {
     private var articles = mutableListOf<Article>()
     lateinit var drawerLayout: DrawerLayout
     lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
-    lateinit var darktoggleswitch : MenuItem
-    lateinit var renderImagesToggleButton : MenuItem
+    lateinit var darktoggleswitch : SwitchCompat
+    lateinit var renderImagesToggleButton : SwitchCompat
     private lateinit var navView: NavigationView
 
 
@@ -49,8 +53,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Setting User Preferences and loading dark mode and render images settings
         val userPreferences = getSharedPreferences(getString(R.string.userpref) , Context.MODE_PRIVATE )
         val userPreferencesEditor : SharedPreferences.Editor = userPreferences.edit()
+
 
         if(userPreferences.contains("darktheme")){
             if(userPreferences.getBoolean("darktheme", true)){
@@ -70,6 +76,8 @@ class MainActivity : AppCompatActivity() {
             global.renderimages = userPreferences.getBoolean("renderimages", true)
         }
 
+        // Setting up the Navigation View and Drawer Layout
+
         drawerLayout = findViewById(R.id.drawerLayout)
         actionBarDrawerToggle =
             ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
@@ -81,37 +89,47 @@ class MainActivity : AppCompatActivity() {
         navView = findViewById(R.id.navView)
 
 
-        darktoggleswitch = navView.menu.findItem(R.id.darkthemetoggle)
+        darktoggleswitch = drawerLayout.findViewById(R.id.darkthemetoggle)
         darktoggleswitch.isChecked = global.darktheme
-        renderImagesToggleButton = navView.menu.findItem(R.id.renderimagetoggle)
+        renderImagesToggleButton = drawerLayout.findViewById(R.id.renderimagetoggle)
         renderImagesToggleButton.isChecked = global.renderimages
+        val searchbtn : Button = drawerLayout.findViewById(R.id.Search)
 
-//        navView.setNavigationItemSelectedListener(this)
 
 
-        darktoggleswitch.setOnMenuItemClickListener {
-            global.darktheme = !global.darktheme
-            if (!global.darktheme) {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        userPreferencesEditor.putBoolean("darktheme", false)
-                        userPreferencesEditor.apply()
-                    } else {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        userPreferencesEditor.putBoolean("darktheme", true)
-                        userPreferencesEditor.apply()
+        //Click Listener for Dark Theme Toggle Button
 
+        darktoggleswitch.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
+            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+                global.darktheme = !global.darktheme
+                if (!global.darktheme) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    userPreferencesEditor.putBoolean("darktheme", false)
+                    userPreferencesEditor.apply()
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    userPreferencesEditor.putBoolean("darktheme", true)
+                    userPreferencesEditor.apply()
+
+                }
             }
-            true
-        }
+        })
+
+        //Click Listener for Render Images Toggle Button
+
+        renderImagesToggleButton.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
+            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+
+                global.renderimages = !global.renderimages
+                renderImagesToggleButton.isChecked = global.renderimages
+                userPreferencesEditor.putBoolean("renderimages", global.renderimages)
+                userPreferencesEditor.apply()
+            }
+        })
 
 
-        renderImagesToggleButton.setOnMenuItemClickListener {
-            global.renderimages = !global.renderimages
-            renderImagesToggleButton.isChecked = global.renderimages
-            userPreferencesEditor.putBoolean("renderimages", global.renderimages)
-            userPreferencesEditor.apply()
-            true
-        }
+
+
 
 
 
@@ -142,7 +160,7 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
-
+        //Setting up the Recycler View
         adapter = NewsAdapter(this@MainActivity, articles)
         val rv = findViewById<RecyclerView>(R.id.newsList)
         rv.adapter = adapter
@@ -150,7 +168,7 @@ class MainActivity : AppCompatActivity() {
         getNews()
 
 
-
+        // Scroll listener for Recycler View which sets the App Title to the source of news
         rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val tempPos = (rv.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
@@ -164,6 +182,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
 
 
@@ -201,6 +221,7 @@ class MainActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+
 
 
 }

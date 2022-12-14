@@ -44,6 +44,51 @@
 
 
 
+            <!--    <item-->
+            <!--        android:id="@+id/darkthemetoggle"-->
+            <!--        android:title="@string/dark_theme"-->
+            <!--        app:actionLayout="@layout/switch_item"-->
+            <!--        app:showAsAction="ifRoom" />-->
+
+            <!--    <item-->
+            <!--        android:id="@+id/renderimagetoggle"-->
+            <!--        android:title="@string/render_images"-->
+            <!--        app:actionLayout="@layout/switch_item"-->
+            <!--        app:showAsAction="always" />-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                >
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/darkthemetoggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/dark_theme"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/renderimagetoggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/render_images"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/darkthemetoggle" />
+
+                <Button
+                    android:id="@+id/Search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/Search"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/renderimagetoggle" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </com.google.android.material.navigation.NavigationView>
 

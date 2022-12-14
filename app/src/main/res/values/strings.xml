@@ -11,4 +11,5 @@
     <string name="render_images">Render Images</string>
     <string name="data">livemint</string>
     <string name="userpref">com.example.networkingpr.userpreferences</string>
+    <string name="Search">Search</string>
 </resources>

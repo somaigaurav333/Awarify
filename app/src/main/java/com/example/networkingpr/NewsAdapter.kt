@@ -1,10 +1,8 @@
 package com.example.networkingpr
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,26 +10,24 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 
 
-class NewsAdapter(val context: Context, val articles: List<Article>) :
+class NewsAdapter(private val context: Context, private val articles: List<Article>) :
     Adapter<NewsAdapter.ArticleViewHolder>() {
 
 
 
 
     class ArticleViewHolder(itemView: View) : ViewHolder(itemView) {
-        var newsImage = itemView.findViewById<ImageView>(R.id.newsImage)
-        var newsTitle = itemView.findViewById<TextView>(R.id.newsTitle)
-        var newsDescription = itemView.findViewById<TextView>(R.id.newsDescription)
-        var likebtn = itemView.findViewById<Button>(R.id.likebtn)
+        var newsImage = itemView.findViewById<ImageView>(R.id.newsImage)!!
+        var newsTitle = itemView.findViewById<TextView>(R.id.newsTitle)!!
+        var newsDescription = itemView.findViewById<TextView>(R.id.newsDescription)!!
+        var likebtn = itemView.findViewById<Button>(R.id.likebtn)!!
         var liked = false
-        var sharebtn = itemView.findViewById<Button>(R.id.sharebtn)
+        var sharebtn = itemView.findViewById<Button>(R.id.sharebtn)!!
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
@@ -41,6 +37,7 @@ class NewsAdapter(val context: Context, val articles: List<Article>) :
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         val article = articles[position]
 
@@ -70,7 +67,7 @@ class NewsAdapter(val context: Context, val articles: List<Article>) :
 
         if(global.renderimages){
             holder.newsImage.visibility = View.VISIBLE
-                Glide.with(context).load(article.urlToImage ).placeholder(R.drawable.ic_baseline_android_loading).error(R.drawable.ic_baseline_android_error).into(holder.newsImage)
+            Glide.with(context).load(article.urlToImage ).placeholder(R.drawable.ic_baseline_android_loading).error(R.drawable.ic_baseline_android_error).into(holder.newsImage)
         }else{
             holder.newsImage.visibility = View.GONE
         }
