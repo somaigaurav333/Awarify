@@ -2,6 +2,8 @@ package com.example.networkingpr
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +21,8 @@ import com.bumptech.glide.Glide
 
 class NewsAdapter(val context: Context, val articles: List<Article>) :
     Adapter<NewsAdapter.ArticleViewHolder>() {
+
+
 
 
     class ArticleViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -66,7 +70,7 @@ class NewsAdapter(val context: Context, val articles: List<Article>) :
 
         if(global.renderimages){
             holder.newsImage.visibility = View.VISIBLE
-            Glide.with(context).load(article.urlToImage).into(holder.newsImage)
+            Glide.with(context).load(article.urlToImage ).placeholder(R.drawable.ic_baseline_android_loading).error(R.drawable.ic_baseline_android_error).into(holder.newsImage)
         }else{
             holder.newsImage.visibility = View.GONE
         }
