@@ -1,20 +1,18 @@
 package com.example.networkingpr
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.CompoundButton
-import android.widget.RadioGroup.OnCheckedChangeListener
-import android.widget.Switch
-import android.widget.ToggleButton
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -165,6 +163,7 @@ class MainActivity : AppCompatActivity() {
         val rv = findViewById<RecyclerView>(R.id.newsList)
         rv.adapter = adapter
         rv.layoutManager = LinearLayoutManager(this@MainActivity)
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         getNews()
 
 
@@ -183,8 +182,27 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        // Search Button code
+        searchbtn.setOnClickListener(object: OnClickListener{
+            override fun onClick(p0: View?) {
+                val searchField = drawerLayout.findViewById<TextView>(R.id.searchfield)
+                val searchstring : String = searchField.text.toString()
+                if(searchstring.isNotEmpty()){
+                    changeNews(searchstring)
+                    searchField.text = ""
+                    drawerLayout.close()
+                    rv.scrollToPosition(0)
+                    try {
+                        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+                    } catch (e: Exception) {
+                        Log.d("OK", "Keyboard already closed")
+                    }
+                }
+            }
 
+
+        })
 
 
     }
@@ -195,11 +213,14 @@ class MainActivity : AppCompatActivity() {
         val news: Call<News> = NewsService.newsInstance.getHeadlines("tech")
 
         news.enqueue(object : Callback<News> {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<News>, response: Response<News>) {
                 val news = response.body()
                 if (news != null) {
                     Log.d("GS#123789@", news.toString())
                     articles.addAll(news.articles)
+                    articles.reverse()
+//                    articles.shuffle()
                     adapter.notifyDataSetChanged()
 
                 }
@@ -212,6 +233,36 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+
+    private fun changeNews(searchnews:String) {
+        val news: Call<News> = NewsService.newsInstance.getHeadlines(searchnews)
+
+        news.enqueue(object : Callback<News> {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<News>, response: Response<News>) {
+                val news = response.body()
+                if (news != null) {
+                    Log.d("GS#123789@", news.toString())
+                    articles.clear()
+                    articles.addAll(news.articles)
+//                    articles.reverse()
+//                    articles.shuffle()
+                    adapter.notifyDataSetChanged()
+
+                }
+            }
+
+            override fun onFailure(call: Call<News>, t: Throwable) {
+                Log.d("GS#123789@", "Can't fetch news", t)
+            }
+        })
+
+
+    }
+
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
