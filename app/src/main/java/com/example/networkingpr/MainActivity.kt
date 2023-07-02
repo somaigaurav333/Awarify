@@ -8,8 +8,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
-import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.CompoundButton
@@ -106,14 +104,15 @@ class MainActivity : AppCompatActivity() {
         darktoggleswitch.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
             override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
                 global.darktheme = !global.darktheme
-                if (!global.darktheme) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    userPreferencesEditor.putBoolean("darktheme", false)
-                    userPreferencesEditor.apply()
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                if (global.darktheme) {
                     userPreferencesEditor.putBoolean("darktheme", true)
                     userPreferencesEditor.apply()
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    userPreferencesEditor.putBoolean("darktheme", false)
+                    userPreferencesEditor.apply()
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
 
                 }
             }
@@ -223,7 +222,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<News>, response: Response<News>) {
                 val news = response.body()
                 if (news != null) {
-                    Log.d("GS#123789@", news.toString())
+//                    Log.d("GS#123789@", news.toString())
                     articles.addAll(news.articles)
                     articles.reverse()
 //                    articles.shuffle()
@@ -249,7 +248,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<News>, response: Response<News>) {
                 val news = response.body()
                 if (news != null) {
-                    Log.d("GS#123789@", news.toString())
+//                    Log.d("GS#123789@", news.toString())
                     articles.clear()
                     articles.addAll(news.articles)
 //                    articles.reverse()
