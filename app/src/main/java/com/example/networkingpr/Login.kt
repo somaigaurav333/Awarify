@@ -1,10 +1,14 @@
 package com.example.networkingpr
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 
@@ -20,7 +24,28 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val userPreferences = getSharedPreferences(getString(R.string.userpref) , Context.MODE_PRIVATE )
+        val userPreferencesEditor : SharedPreferences.Editor = userPreferences.edit()
+
+        if(userPreferences.contains("darktheme")){
+            if(userPreferences.getBoolean("darktheme", true)){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                global.darktheme = true
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                global.darktheme = false
+            }
+        }else{
+            global.darktheme = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
+            userPreferencesEditor.putBoolean("darktheme", global.darktheme)
+            userPreferencesEditor.apply()
+        }
+
+
         firebaseAuth = FirebaseAuth.getInstance()
+
+
 
         val user = firebaseAuth.currentUser
         if (user != null) {
@@ -29,7 +54,7 @@ class Login : AppCompatActivity() {
             startActivity(intent)
 
         } else {
-            Toast.makeText(this, "No user found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please Log In", Toast.LENGTH_SHORT).show()
         }
 
         binding.textView.setOnClickListener {
