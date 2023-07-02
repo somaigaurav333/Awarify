@@ -29,6 +29,7 @@ class SignUp : AppCompatActivity() {
         binding.textView.setOnClickListener {
             val intent = Intent(this, Login::class.java)
             startActivity(intent)
+            finish()
         }
 
         binding.signupbtn.setOnClickListener {
@@ -53,6 +54,7 @@ class SignUp : AppCompatActivity() {
                                         Toast.makeText(this@SignUp, "Successfully Signed Up", Toast.LENGTH_SHORT).show()
                                         val intent = Intent(this@SignUp, Login::class.java)
                                         startActivity(intent)
+                                        finish()
                                     }
                                 }
                             }else{

@@ -19,6 +19,8 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.networkingpr.databinding.ActivityLoginBinding
+import com.example.networkingpr.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import retrofit2.Call
@@ -49,6 +51,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var renderImagesToggleButton : SwitchCompat
     private lateinit var navView: NavigationView
 
+    private lateinit var firebaseAuth: FirebaseAuth
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +81,18 @@ class MainActivity : AppCompatActivity() {
         if(userPreferences.contains("renderimages")){
             global.renderimages = userPreferences.getBoolean("renderimages", true)
         }
+
+
+        //loading firebase auth and user
+        firebaseAuth = FirebaseAuth.getInstance()
+        var user = firebaseAuth.currentUser
+
+        if(user==null){
+            val intent = Intent(this, Login::class.java)
+            startActivity(intent)
+            finish()
+        }
+
 
         // Setting up the Navigation View and Drawer Layout
 
@@ -207,11 +223,11 @@ class MainActivity : AppCompatActivity() {
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(this, Login::class.java)
             startActivity(intent)
+            finish()
         }
 
 
     }
-
 
 
     private fun getNews() {
