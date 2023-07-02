@@ -2,6 +2,7 @@ package com.example.networkingpr
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
@@ -21,9 +22,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
+
+//Recycler View Save State, or shift to view model
+
 
 
 object global {
@@ -127,10 +133,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
-
-
 //        navView.setNavigationItemSelectedListener {
 //            when (it.itemId) {
 ////                R.id.darkthemetoggle -> {
@@ -183,26 +185,30 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Search Button code
-        searchbtn.setOnClickListener(object: OnClickListener{
-            override fun onClick(p0: View?) {
-                val searchField = drawerLayout.findViewById<TextView>(R.id.searchfield)
-                val searchstring : String = searchField.text.toString()
-                if(searchstring.isNotEmpty()){
-                    changeNews(searchstring)
-                    searchField.text = ""
-                    drawerLayout.close()
-                    rv.scrollToPosition(0)
-                    try {
-                        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-                    } catch (e: Exception) {
-                        Log.d("OK", "Keyboard already closed")
-                    }
+        searchbtn.setOnClickListener {
+            val searchField = drawerLayout.findViewById<TextView>(R.id.searchfield)
+            val searchstring: String = searchField.text.toString()
+            if (searchstring.isNotEmpty()) {
+                changeNews(searchstring)
+                searchField.text = ""
+                drawerLayout.close()
+                rv.scrollToPosition(0)
+                try {
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+                } catch (e: Exception) {
+                    Log.d("OK", "Keyboard already closed")
                 }
             }
+        }
 
+        val signoutbtn : Button = findViewById(R.id.SignOut)
 
-        })
+        signoutbtn.setOnClickListener{
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this, Login::class.java)
+            startActivity(intent)
+        }
 
 
     }

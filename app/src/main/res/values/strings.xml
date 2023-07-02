@@ -12,4 +12,10 @@
     <string name="data">livemint</string>
     <string name="userpref">com.example.networkingpr.userpreferences</string>
     <string name="Search">Search</string>
+    <string name="action_sign_up">Sign Up</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Sign In</string>
+    <string name="action_sign_in">Sign In</string>
+    <string name="Signout">Sign Out</string>
 </resources>
