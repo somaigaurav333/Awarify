@@ -18,7 +18,7 @@
         <activity
             android:name=".Login"
             android:configChanges="orientation|screenSize"
-            android:exported="true">
+            android:exported="false">
 
             <meta-data
                 android:name="android.app.lib_name"
