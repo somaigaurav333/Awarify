@@ -40,7 +40,7 @@
     android:id="@+id/confirmsignuppass"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:hint="Retype password"
+    android:hint="@string/retype_password"
     android:imeActionLabel="@string/action_sign_in_short"
     android:imeOptions="actionDone"
     android:inputType="textPassword"

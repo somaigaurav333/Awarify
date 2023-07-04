@@ -2,14 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="@string/home"
+        android:id="@+id/home"
+
         android:icon="@drawable/ic_baseline_home_24" />
 
 
     <item android:title="@string/explore"
+        android:id="@+id/exp"
         android:icon="@drawable/ic_baseline_explore_24" />
 
 
     <item android:title="@string/user_profile"
+        android:id="@+id/userprofile"
+
         android:icon="@drawable/ic_baseline_person_24" />
 
 </menu>

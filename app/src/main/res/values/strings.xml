@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">networkingpr</string>
+    <string name="app_name">Awarify</string>
     <string name="share">Share</string>
     <string name="news_title">News Title</string>
     <string name="news_description">News Description</string>
@@ -21,4 +21,9 @@
     <string name="home">Home</string>
     <string name="user_profile">User Profile</string>
     <string name="explore">Explore</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="retype_password">Retype password</string>
+    <string name="search">Search</string>
+    <string name="settings">Settings</string>
 </resources>

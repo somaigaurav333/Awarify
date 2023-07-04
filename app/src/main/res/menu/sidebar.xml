@@ -8,26 +8,23 @@
     tools:context=".MainActivity">
 
 
-<!--    <item-->
-<!--        android:id="@+id/darkthemetoggle"-->
-<!--        android:title="@string/dark_theme"-->
-<!--        app:actionLayout="@layout/switch_item"-->
-<!--        app:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/darkthemetoggle"
+        android:title="@string/dark_theme"
+        app:actionLayout="@layout/switch_item"
+        app:showAsAction="ifRoom" />
 
-<!--    <item-->
-<!--        android:id="@+id/renderimagetoggle"-->
-<!--        android:title="@string/render_images"-->
-<!--        app:actionLayout="@layout/switch_item"-->
-<!--        app:showAsAction="always" />-->
+    <item
+        android:id="@+id/renderimagetoggle"
+        android:title="@string/render_images"
+        app:actionLayout="@layout/switch_item"
+        app:showAsAction="always" />
 
-<!--    <item-->
-<!--        android:id="@+id/Search"-->
-<!--        android:title= "@string/Search"  />-->
 
-<!--    <item-->
-<!--        android:id="@+id/nav_settings"-->
-<!--        android:title="Settings" />-->
-<!--    -->
+    <item
+        android:id="@+id/nav_settings"
+        android:title="@string/settings" />
+
 
 
 </menu>

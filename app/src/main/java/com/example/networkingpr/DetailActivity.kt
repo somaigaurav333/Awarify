@@ -3,13 +3,10 @@ package com.example.networkingpr
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.provider.ContactsContract.CommonDataKinds.Website
 import android.view.View
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
-import org.json.JSONObject.NULL
 
 class DetailActivity : AppCompatActivity() {
 

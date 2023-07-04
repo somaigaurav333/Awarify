@@ -17,10 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.networkingpr.databinding.ActivityLoginBinding
-import com.example.networkingpr.databinding.ActivityMainBinding
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import retrofit2.Call
@@ -37,8 +35,11 @@ object global {
     var darktheme = true
     var renderimages = true
     var position = 0
+//    val _tempTitle : MutableLiveData<String>()
 
 }
+
+
 
 
 
@@ -50,6 +51,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var darktoggleswitch : SwitchCompat
     lateinit var renderImagesToggleButton : SwitchCompat
     private lateinit var navView: NavigationView
+    lateinit var homeFragment: HomeFragment
+    lateinit var userProfileFragment: UserProfileFragment
+    lateinit var exploreFragment: ExploreFragment
 
     private lateinit var firebaseAuth: FirebaseAuth
 
@@ -83,9 +87,12 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
         //loading firebase auth and user
         firebaseAuth = FirebaseAuth.getInstance()
-        var user = firebaseAuth.currentUser
+        val user = firebaseAuth.currentUser
+
+
 
         if(user==null){
             val intent = Intent(this, Login::class.java)
@@ -94,31 +101,29 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        homeFragment = HomeFragment()
+        userProfileFragment = UserProfileFragment()
+        exploreFragment = ExploreFragment()
+
+
+
+
         // Setting up the Navigation View and Drawer Layout
 
         drawerLayout = findViewById(R.id.drawerLayout)
-        actionBarDrawerToggle =
-            ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
 
+        actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+//        navView = drawerLayout.findViewById(R.id.navView)
+
         navView = findViewById(R.id.navView)
 
 
-        darktoggleswitch = drawerLayout.findViewById(R.id.darkthemetoggle)
-        darktoggleswitch.isChecked = global.darktheme
-        renderImagesToggleButton = drawerLayout.findViewById(R.id.renderimagetoggle)
-        renderImagesToggleButton.isChecked = global.renderimages
-        val searchbtn : Button = drawerLayout.findViewById(R.id.Search)
-
-
-
-        //Click Listener for Dark Theme Toggle Button
-
-        darktoggleswitch.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
-            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+        navView.setNavigationItemSelectedListener {
+            if(it.itemId==R.id.darkthemetoggle){
                 global.darktheme = !global.darktheme
                 if (global.darktheme) {
                     userPreferencesEditor.putBoolean("darktheme", true)
@@ -128,132 +133,45 @@ class MainActivity : AppCompatActivity() {
                     userPreferencesEditor.putBoolean("darktheme", false)
                     userPreferencesEditor.apply()
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
-
                 }
-            }
-        })
-
-        //Click Listener for Render Images Toggle Button
-
-        renderImagesToggleButton.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
-            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
-
+            }else if(it.itemId==R.id.renderimagetoggle){
                 global.renderimages = !global.renderimages
                 renderImagesToggleButton.isChecked = global.renderimages
                 userPreferencesEditor.putBoolean("renderimages", global.renderimages)
                 userPreferencesEditor.apply()
             }
-        })
-
-
-
-//        navView.setNavigationItemSelectedListener {
-//            when (it.itemId) {
-////                R.id.darkthemetoggle -> {
-////                    global.darktheme = findViewById<ToggleButton>(R.id.darkthemetoggle).isActivated
-////
-////                    if (!global.darktheme) {
-////                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-////                    } else {
-////                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-////                    }
-////                }
-////                R.id.renderimagetoggle -> {
-////                    global.renderimages =
-////                        findViewById<ToggleButton>(R.id.renderimagetoggle).isActivated
-////                    Log.e("#toggleGS12@@", global.renderimages.toString())
-////                }
-//
-//                R.id.nav_account -> {
-//                    Log.e("#toggleGS12@@", "my acc pressed")
-//                }
-//
-//
-//            }
-//            true
-//        }
-
-
-        //Setting up the Recycler View
-        adapter = NewsAdapter(this@MainActivity, articles)
-        val rv = findViewById<RecyclerView>(R.id.newsList)
-        rv.adapter = adapter
-        rv.layoutManager = LinearLayoutManager(this@MainActivity)
-        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        getNews()
-
-
-        // Scroll listener for Recycler View which sets the App Title to the source of news
-        rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val tempPos = (rv.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-                if(tempPos>=0){
-                    global.position = tempPos
-                    var tempTitle = articles[global.position].source.name
-                    if((tempTitle.length>4) && (tempTitle.substring(tempTitle.length-4, tempTitle.length) ==".com")){
-                        tempTitle = tempTitle.substring(0, tempTitle.length -4)
-                    }
-                    title = tempTitle
-                }
-            }
-        })
-
-        // Search Button code
-        searchbtn.setOnClickListener {
-            val searchField = drawerLayout.findViewById<TextView>(R.id.searchfield)
-            val searchstring: String = searchField.text.toString()
-            if (searchstring.isNotEmpty()) {
-                changeNews(searchstring)
-                searchField.text = ""
-                drawerLayout.close()
-                rv.scrollToPosition(0)
-                try {
-                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-                } catch (e: Exception) {
-                    Log.d("OK", "Keyboard already closed")
-                }
-            }
+            true
         }
 
-        val signoutbtn : Button = findViewById(R.id.SignOut)
 
-        signoutbtn.setOnClickListener{
-            FirebaseAuth.getInstance().signOut()
-            val intent = Intent(this, Login::class.java)
-            startActivity(intent)
-            finish()
+
+
+
+        //Code for bottom app bar
+
+        val navbar : BottomNavigationView = findViewById(R.id.navbar)
+
+        navbar.setOnItemSelectedListener {
+            if(it.itemId==R.id.home){
+                replaceFragment(homeFragment)
+            }else if(it.itemId==R.id.userprofile){
+                replaceFragment(userProfileFragment)
+            }else if(it.itemId==R.id.exp){
+                replaceFragment(exploreFragment)
+            }
+
+            true
         }
+
+
+        replaceFragment(homeFragment)
 
 
     }
 
 
-    private fun getNews() {
-        val news: Call<News> = NewsService.newsInstance.getHeadlines("tech")
-
-        news.enqueue(object : Callback<News> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<News>, response: Response<News>) {
-                val news = response.body()
-                if (news != null) {
-//                    Log.d("GS#123789@", news.toString())
-                    articles.addAll(news.articles)
-                    articles.reverse()
-//                    articles.shuffle()
-                    adapter.notifyDataSetChanged()
-
-                }
-            }
-
-            override fun onFailure(call: Call<News>, t: Throwable) {
-                Log.d("GS#123789@", "Can't fetch news", t)
-            }
-        })
 
 
-    }
 
 
     private fun changeNews(searchnews:String) {
@@ -288,12 +206,44 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true
+             return true
         }
 
         return super.onOptionsItemSelected(item)
     }
 
+    fun replaceFragment(frag : Fragment) : Boolean{
+        supportFragmentManager.beginTransaction().apply {
+            disallowAddToBackStack()
+            replace(R.id.fragment, frag)
+            commit()
+        }
+        return true
+    }
+
 
 
 }
+
+
+
+
+//         Search Button code
+//        val searchbtn : Button = drawerLayout.findViewById(R.id.Search)
+//
+//        searchbtn.setOnClickListener {
+//            val searchField = drawerLayout.findViewById<TextView>(R.id.searchfield)
+//            val searchstring: String = searchField.text.toString()
+//            if (searchstring.isNotEmpty()) {
+//                changeNews(searchstring)
+//                searchField.text = ""
+//                drawerLayout.close()
+//                homeFragment.rv.scrollToPosition(0)
+//                try {
+//                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+//                    imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+//                } catch (e: Exception) {
+//                    Log.d("OK", "Keyboard already closed")
+//                }
+//            }
+//        }
