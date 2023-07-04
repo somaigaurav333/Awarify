@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 //import com.example.Awarify.R
@@ -36,10 +37,11 @@ class HomeFragment : Fragment() {
         val view : View = inflater.inflate(R.layout.fragment_home, container, false)
         //Setting up the Recycler View
         adapter = NewsAdapter(this.requireContext(), articles)
-        rv = view.findViewById<RecyclerView>(R.id.newsList)
+        rv = view.findViewById(R.id.newsList)
         rv.adapter = adapter
         rv.layoutManager = LinearLayoutManager(this.context)
         adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+
         return view
     }
 
@@ -60,8 +62,7 @@ class HomeFragment : Fragment() {
                     if((tempTitle.length>4) && (tempTitle.substring(tempTitle.length-4, tempTitle.length) ==".com")){
                         tempTitle = tempTitle.substring(0, tempTitle.length -4)
                     }
-//                    global._tempTitle.value = tempTitle
-
+                    global._tempTitle = tempTitle
 
                 }
             }

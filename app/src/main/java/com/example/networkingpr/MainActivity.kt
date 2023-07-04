@@ -29,18 +29,14 @@ import retrofit2.Response
 //Recycler View Save State, or shift to view model
 
 
-
 object global {
 
     var darktheme = true
     var renderimages = true
     var position = 0
-//    val _tempTitle : MutableLiveData<String>()
+    var _tempTitle: String = "Awarify"
 
 }
-
-
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -48,8 +44,8 @@ class MainActivity : AppCompatActivity() {
     private var articles = mutableListOf<Article>()
     lateinit var drawerLayout: DrawerLayout
     lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
-    lateinit var darktoggleswitch : SwitchCompat
-    lateinit var renderImagesToggleButton : SwitchCompat
+    lateinit var darktoggleswitch: SwitchCompat
+    lateinit var renderImagesToggleButton: SwitchCompat
     private lateinit var navView: NavigationView
     lateinit var homeFragment: HomeFragment
     lateinit var userProfileFragment: UserProfileFragment
@@ -58,34 +54,39 @@ class MainActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
+
+
         //Setting User Preferences and loading dark mode and render images settings
-        val userPreferences = getSharedPreferences(getString(R.string.userpref) , Context.MODE_PRIVATE )
-        val userPreferencesEditor : SharedPreferences.Editor = userPreferences.edit()
+        val userPreferences =
+            getSharedPreferences(getString(R.string.userpref), Context.MODE_PRIVATE)
+        val userPreferencesEditor: SharedPreferences.Editor = userPreferences.edit()
 
 
-        if(userPreferences.contains("darktheme")){
-            if(userPreferences.getBoolean("darktheme", true)){
+        if (userPreferences.contains("darktheme")) {
+            if (userPreferences.getBoolean("darktheme", true)) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 global.darktheme = true
-            }else{
+            } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 global.darktheme = false
             }
-        }else{
-            global.darktheme = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
+        } else {
+            global.darktheme =
+                (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
             userPreferencesEditor.putBoolean("darktheme", global.darktheme)
             userPreferencesEditor.apply()
         }
 
-        if(userPreferences.contains("renderimages")){
+        if (userPreferences.contains("renderimages")) {
             global.renderimages = userPreferences.getBoolean("renderimages", true)
         }
-
 
 
         //loading firebase auth and user
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        if(user==null){
+        if (user == null) {
             val intent = Intent(this, Login::class.java)
             startActivity(intent)
             finish()
@@ -106,24 +107,25 @@ class MainActivity : AppCompatActivity() {
         exploreFragment = ExploreFragment()
 
 
-
-
         // Setting up the Navigation View and Drawer Layout
 
         drawerLayout = findViewById(R.id.drawerLayout)
 
-        actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
+        actionBarDrawerToggle =
+            ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-//        navView = drawerLayout.findViewById(R.id.navView)
 
         navView = findViewById(R.id.navView)
 
 
+//        darktoggleswitch.isChecked = global.darktheme
+
+
         navView.setNavigationItemSelectedListener {
-            if(it.itemId==R.id.darkthemetoggle){
+            if (it.itemId == R.id.darkthemetoggle) {
                 global.darktheme = !global.darktheme
                 if (global.darktheme) {
                     userPreferencesEditor.putBoolean("darktheme", true)
@@ -134,7 +136,8 @@ class MainActivity : AppCompatActivity() {
                     userPreferencesEditor.apply()
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
-            }else if(it.itemId==R.id.renderimagetoggle){
+
+            } else if (it.itemId == R.id.renderimagetoggle) {
                 global.renderimages = !global.renderimages
                 renderImagesToggleButton.isChecked = global.renderimages
                 userPreferencesEditor.putBoolean("renderimages", global.renderimages)
@@ -144,20 +147,31 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
-
         //Code for bottom app bar
 
-        val navbar : BottomNavigationView = findViewById(R.id.navbar)
+        val navbar: BottomNavigationView = findViewById(R.id.navbar)
 
         navbar.setOnItemSelectedListener {
-            if(it.itemId==R.id.home){
+            if (it.itemId == R.id.home) {
+
                 replaceFragment(homeFragment)
-            }else if(it.itemId==R.id.userprofile){
-                replaceFragment(userProfileFragment)
-            }else if(it.itemId==R.id.exp){
+
+                supportActionBar!!.hide()
+
+
+            } else if (it.itemId == R.id.exp) {
+
                 replaceFragment(exploreFragment)
+                supportActionBar!!.hide()
+            }
+            else if (it.itemId == R.id.userprofile) {
+
+                replaceFragment(userProfileFragment)
+                supportActionBar!!.show()
+
+
+
+
             }
 
             true
@@ -170,49 +184,16 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
-    private fun changeNews(searchnews:String) {
-        val news: Call<News> = NewsService.newsInstance.getHeadlines(searchnews)
-
-        news.enqueue(object : Callback<News> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<News>, response: Response<News>) {
-                val news = response.body()
-                if (news != null) {
-//                    Log.d("GS#123789@", news.toString())
-                    articles.clear()
-                    articles.addAll(news.articles)
-//                    articles.reverse()
-//                    articles.shuffle()
-                    adapter.notifyDataSetChanged()
-
-                }
-            }
-
-            override fun onFailure(call: Call<News>, t: Throwable) {
-                Log.d("GS#123789@", "Can't fetch news", t)
-            }
-        })
-
-
-    }
-
-
-
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-             return true
+            return true
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    fun replaceFragment(frag : Fragment) : Boolean{
+    fun replaceFragment(frag: Fragment): Boolean {
         supportFragmentManager.beginTransaction().apply {
             disallowAddToBackStack()
             replace(R.id.fragment, frag)
@@ -222,28 +203,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
 }
 
 
 
 
-//         Search Button code
-//        val searchbtn : Button = drawerLayout.findViewById(R.id.Search)
-//
-//        searchbtn.setOnClickListener {
-//            val searchField = drawerLayout.findViewById<TextView>(R.id.searchfield)
-//            val searchstring: String = searchField.text.toString()
-//            if (searchstring.isNotEmpty()) {
-//                changeNews(searchstring)
-//                searchField.text = ""
-//                drawerLayout.close()
-//                homeFragment.rv.scrollToPosition(0)
-//                try {
-//                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-//                    imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-//                } catch (e: Exception) {
-//                    Log.d("OK", "Keyboard already closed")
-//                }
-//            }
-//        }

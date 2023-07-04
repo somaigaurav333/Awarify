@@ -7,19 +7,33 @@
     tools:context=".ExploreFragment">
 
     <EditText
-        android:id="@+id/textView2"
+        android:id="@+id/exploresearchtextview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:hint="@string/search"
         android:background="#222222"
+        android:singleLine="true"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/explorerv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/exploresearchtextview"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
