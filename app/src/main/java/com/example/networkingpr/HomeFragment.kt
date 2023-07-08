@@ -46,7 +46,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Toast.makeText(context, "Home Loading", Toast.LENGTH_SHORT).show()
 
         shimmer = view.findViewById(R.id.shimmerLayoutHome)
         refreshView = view.findViewById(R.id.refresh)

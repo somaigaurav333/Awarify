@@ -46,7 +46,6 @@ class ExploreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Toast.makeText(context, "Exp Loading", Toast.LENGTH_SHORT).show()
 
 
         shimmerLayout = view.findViewById(R.id.shimmerLayoutExp)
