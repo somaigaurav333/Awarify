@@ -24,6 +24,9 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
+
+        supportActionBar!!.hide()
+
         if (savedInstanceState == null) {
             val url = intent.getStringExtra("URL")
 

@@ -1,17 +1,9 @@
 package com.example.networkingpr
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.CompoundButton
-import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -21,9 +13,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 //Recycler View Save State, or shift to view model
@@ -61,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         if (supportActionBar != null) {
             supportActionBar!!.hide()
         }
+
 
 
         //Setting User Preferences and loading dark mode and render images settings
@@ -121,27 +111,11 @@ class MainActivity : AppCompatActivity() {
         navView = findViewById(R.id.navView)
 
 
-//        darktoggleswitch.isChecked = global.darktheme
-
-
         navView.setNavigationItemSelectedListener {
-            if (it.itemId == R.id.darkthemetoggle) {
-                global.darktheme = !global.darktheme
-                if (global.darktheme) {
-                    userPreferencesEditor.putBoolean("darktheme", true)
-                    userPreferencesEditor.apply()
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    userPreferencesEditor.putBoolean("darktheme", false)
-                    userPreferencesEditor.apply()
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-
-            } else if (it.itemId == R.id.renderimagetoggle) {
-                global.renderimages = !global.renderimages
-                renderImagesToggleButton.isChecked = global.renderimages
-                userPreferencesEditor.putBoolean("renderimages", global.renderimages)
-                userPreferencesEditor.apply()
+            if (it.itemId == R.id.nav_settings) {
+                val intent  = Intent(this, Settings::class.java)
+                startActivity(intent)
+                drawerLayout.close()
             }
             true
         }
@@ -181,6 +155,17 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(homeFragment)
 
 
+        val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(arg0: Context, intent: Intent) {
+                val action = intent.action
+                if (action == "finish_main_activity") {
+                    finish()
+                }
+            }
+        }
+        registerReceiver(broadcastReceiver, IntentFilter("finish_main_activity"))
+
+
     }
 
 
@@ -201,6 +186,9 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
+
+
+
 
 
 }

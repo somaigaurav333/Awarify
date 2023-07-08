@@ -47,13 +47,5 @@
         app:layout_constraintTop_toBottomOf="@+id/profileEmail"
         tools:text="lname" />
 
-    <Button
-        android:id="@+id/signout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:text="@string/Signout"
-        app:layout_constraintBottom_toBottomOf="@+id/userAvatar"
-        app:layout_constraintStart_toEndOf="@+id/userAvatar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

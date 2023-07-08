@@ -9,16 +9,22 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_baseline_newspaper_24"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_baseline_newspaper_24"
         android:supportsRtl="true"
         android:theme="@style/Theme.networkingpr"
-        android:hardwareAccelerated="true"
         tools:targetApi="31">
-
         <activity
-            android:name="com.example.networkingpr.Login"
+            android:name=".Settings"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".Login"
             android:configChanges="orientation|screenSize"
             android:exported="false">
             <meta-data
@@ -26,14 +32,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="com.example.networkingpr.SignUp"
+            android:name=".SignUp"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name="com.example.networkingpr.DetailActivity"
+            android:name=".DetailActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false">
             <meta-data
@@ -41,7 +47,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name="com.example.networkingpr.MainActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
