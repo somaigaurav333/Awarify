@@ -8,10 +8,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,12 +24,14 @@ class HomeFragment : Fragment() {
     lateinit var adapter: NewsAdapter
     private var articles = mutableListOf<Article>()
     lateinit var rv: RecyclerView
+    lateinit var shimmer: ShimmerFrameLayout
+    lateinit var refreshView: SwipeRefreshLayout
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         val view: View = inflater.inflate(R.layout.fragment_home, container, false)
         //Setting up the Recycler View
         adapter = NewsAdapter(this.requireContext(), articles)
@@ -42,18 +46,21 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Toast.makeText(context, "Home Loading", Toast.LENGTH_SHORT).show()
 
-        val refreshView: SwipeRefreshLayout = view.findViewById(R.id.refresh)
+        shimmer = view.findViewById(R.id.shimmerLayoutHome)
+        refreshView = view.findViewById(R.id.refresh)
         refreshView.setColorSchemeColors(Color.parseColor("#993399"))
 
-        refreshView.setOnRefreshListener {
-
-            getNews()
-            refreshView.isRefreshing = false
-        }
-
-
+        rv.visibility = View.GONE
         getNews()
+
+
+
+        refreshView.setOnRefreshListener {
+            rv.visibility = View.GONE
+            getNews()
+        }
 
 
         // Scroll listener for Recycler View which sets the App Title to the source of news
@@ -80,28 +87,42 @@ class HomeFragment : Fragment() {
 
 
     private fun getNews() {
+
         val news: Call<News> = NewsService.newsInstance.getHeadlines("tech")
+
 
         news.enqueue(object : Callback<News> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(call: Call<News>, response: Response<News>) {
                 val news = response.body()
                 if (news != null) {
-//                    Log.d("GS#123789@", news.toString())
                     articles.addAll(news.articles)
                     articles.reverse()
-//                    articles.shuffle()
                     adapter.notifyDataSetChanged()
+                    shimmer.stopShimmer()
+                    shimmer.visibility = View.GONE
+                    rv.visibility = View.VISIBLE
+                    refreshView.isRefreshing = false
 
                 }
             }
 
             override fun onFailure(call: Call<News>, t: Throwable) {
-                Log.d("GS#123789@", "Can't fetch news", t)
+
+                Log.d("GS#123789@", "Unable to fetch news", t)
+                Toast.makeText(context, "Error: Couldn't fetch News", Toast.LENGTH_SHORT).show()
+                refreshView.isRefreshing = false
+                if ((rv.adapter?.itemCount!! > 0) || (rv.visibility == View.VISIBLE)) {
+                    shimmer.stopShimmer()
+                    shimmer.visibility = View.GONE
+                    rv.visibility = View.VISIBLE
+                }
             }
+
         })
 
 
     }
+
 
 }
