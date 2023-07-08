@@ -17,6 +17,7 @@ class UserProfileFragment : Fragment() {
     lateinit var fireBaseAuth: FirebaseAuth
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -33,8 +34,7 @@ class UserProfileFragment : Fragment() {
         emailtextview.text = fireBaseAuth.currentUser?.email.toString()
 //        userAvatar.setImageURI(fireBaseAuth.currentUser?.photoUrl)
         userAvatar.setImageResource(R.drawable.ic_baseline_person_24)
-        view.findViewById<TextView>(R.id.fname).text = "first"
-        view.findViewById<TextView>(R.id.lname).text = "last"
+        view.findViewById<TextView>(R.id.profile_username).text = fireBaseAuth.currentUser?.displayName.toString()
 
 
     }

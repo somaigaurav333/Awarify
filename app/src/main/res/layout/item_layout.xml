@@ -52,6 +52,7 @@
             app:layout_constraintTop_toBottomOf="@+id/newsTitle" />
 
         <Button
+            android:visibility="visible"
             android:id="@+id/likebtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,6 +65,7 @@
             app:layout_constraintTop_toBottomOf="@+id/newsDescription" />
 
         <Button
+            android:visibility="visible"
             android:id="@+id/sharebtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

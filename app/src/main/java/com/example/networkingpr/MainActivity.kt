@@ -7,7 +7,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -29,12 +28,10 @@ object global {
 
 
 class MainActivity : AppCompatActivity() {
-    lateinit var adapter: NewsAdapter
-    private var articles = mutableListOf<Article>()
+
     lateinit var drawerLayout: DrawerLayout
     lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
-    lateinit var darktoggleswitch: SwitchCompat
-    lateinit var renderImagesToggleButton: SwitchCompat
+
     private lateinit var navView: NavigationView
     lateinit var homeFragment: HomeFragment
     lateinit var userProfileFragment: UserProfileFragment
@@ -47,10 +44,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //loading firebase auth and user
+        firebaseAuth = FirebaseAuth.getInstance()
+        val user = firebaseAuth.currentUser
+
+
+
+        if (user == null) {
+            val intent = Intent(this, Login::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         if (supportActionBar != null) {
             supportActionBar!!.hide()
         }
-
 
 
         //Setting User Preferences and loading dark mode and render images settings
@@ -79,18 +87,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        //loading firebase auth and user
-        firebaseAuth = FirebaseAuth.getInstance()
-        val user = firebaseAuth.currentUser
-
-
-
-        if (user == null) {
-            val intent = Intent(this, Login::class.java)
-            startActivity(intent)
-            finish()
-        }
-
+        // Loading fragment instances
 
         homeFragment = HomeFragment()
         userProfileFragment = UserProfileFragment()
@@ -113,7 +110,7 @@ class MainActivity : AppCompatActivity() {
 
         navView.setNavigationItemSelectedListener {
             if (it.itemId == R.id.nav_settings) {
-                val intent  = Intent(this, Settings::class.java)
+                val intent = Intent(this, Settings::class.java)
                 startActivity(intent)
                 drawerLayout.close()
             }
@@ -124,26 +121,22 @@ class MainActivity : AppCompatActivity() {
         //Code for bottom app bar
 
         val navbar: BottomNavigationView = findViewById(R.id.navbar)
+//        navbar.menu.findItem(R.id.home).isChecked=true
 
         navbar.setOnItemSelectedListener {
             if (it.itemId == R.id.home) {
-
                 replaceFragment(homeFragment)
-
                 supportActionBar!!.hide()
-
 
             } else if (it.itemId == R.id.exp) {
 
                 replaceFragment(exploreFragment)
                 supportActionBar!!.hide()
-            }
-            else if (it.itemId == R.id.userprofile) {
+            } else if (it.itemId == R.id.userprofile) {
 
                 replaceFragment(userProfileFragment)
                 supportActionBar!!.show()
-
-
+                supportActionBar?.title = "Profile"
 
 
             }
@@ -186,9 +179,6 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
-
-
-
 
 
 }

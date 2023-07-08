@@ -1,22 +1,19 @@
 package com.example.networkingpr
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.networkingpr.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
-
-import com.example.networkingpr.databinding.ActivityLoginBinding
-
 
 
 class Login : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,11 +32,11 @@ class Login : AppCompatActivity() {
             finish()
         }
 
-        binding.login.setOnClickListener{
+        binding.login.setOnClickListener {
 
             val email = binding.signinemail.text.toString()
             val pass = binding.signinpassword.text.toString()
-            if(email.isNotEmpty() && pass.isNotEmpty()){
+            if (email.isNotEmpty() && pass.isNotEmpty()) {
                 binding.progressBarsignin.visibility = View.VISIBLE
                 binding.login.isEnabled = false
 
@@ -47,14 +44,16 @@ class Login : AppCompatActivity() {
                 GlobalScope.launch(Dispatchers.IO) {
                     firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                         CoroutineScope(Dispatchers.Main).launch {
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 if (it.isSuccessful) {
                                     binding.signinemail.text.clear()
                                     val intent = Intent(this@Login, MainActivity::class.java)
                                     startActivity(intent)
                                     finish()
                                 } else {
-                                    Toast.makeText(this@Login, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@Login, it.exception.toString(), Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                                 binding.signinpassword.text.clear()
                                 binding.login.isEnabled = true
@@ -64,7 +63,7 @@ class Login : AppCompatActivity() {
                     }
                 }
 
-            }else{
+            } else {
                 Toast.makeText(this, "Empty fields", Toast.LENGTH_SHORT).show()
             }
         }

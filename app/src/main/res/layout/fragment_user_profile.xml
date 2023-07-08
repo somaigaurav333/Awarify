@@ -22,30 +22,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:text="Error"
+        android:layout_marginTop="10dp"
+        android:text="Email"
         app:layout_constraintStart_toEndOf="@+id/userAvatar"
-        app:layout_constraintTop_toTopOf="@+id/userAvatar" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_username" />
 
     <TextView
-        android:id="@+id/fname"
+        android:id="@+id/profile_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:text="fname"
+        android:text="Username"
+        android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/userAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/profileEmail" />
+        app:layout_constraintTop_toTopOf="@+id/userAvatar" />
 
-    <TextView
-        android:id="@+id/lname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/fname"
-        app:layout_constraintTop_toBottomOf="@+id/profileEmail"
-        tools:text="lname" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

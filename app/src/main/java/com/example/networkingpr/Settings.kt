@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Switch
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -54,12 +55,30 @@ class Settings : AppCompatActivity() {
 
         signoutbtn.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
-            val intent = Intent(this, Login::class.java)
+            Toast.makeText(this, "Signed Out Successfully", Toast.LENGTH_SHORT).show()
 
+            val intent = Intent(this, Login::class.java)
             startActivity(intent)
+
             val finishMainActivity = Intent("finish_main_activity")
             sendBroadcast(finishMainActivity)
             finish()
+        }
+
+        val deleteaccbtn : Button = findViewById(R.id.deleteacc)
+
+        deleteaccbtn.setOnClickListener{
+            FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener {
+                Toast.makeText(this, "Account Deleted Successfully", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, Login::class.java)
+                startActivity(intent)
+
+                val finishMainActivity = Intent("finish_main_activity")
+                sendBroadcast(finishMainActivity)
+                finish()
+            }
+
+           
         }
 
 

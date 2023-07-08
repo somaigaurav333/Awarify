@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 
 import com.example.networkingpr.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 
 class SignUp : AppCompatActivity() {
 
@@ -36,8 +37,9 @@ class SignUp : AppCompatActivity() {
             val email = binding.signupmail.text.toString()
             val password = binding.signuppassword.text.toString()
             val confirmpass = binding.confirmsignuppass.text.toString()
+            val username = binding.username.text.toString()
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
+            if (email.isNotEmpty() && password.isNotEmpty() && username.isNotEmpty()) {
                 if (password != confirmpass) {
                     Toast.makeText(this, "Passwords don't match", Toast.LENGTH_SHORT).show()
                 } else {
@@ -45,36 +47,55 @@ class SignUp : AppCompatActivity() {
                     binding.progressBar.visibility = View.VISIBLE
 
 
+
                     GlobalScope.launch(Dispatchers.IO) {
 
-                        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener{
-                            if(it.isSuccessful){
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    withContext(Dispatchers.Main){
-                                        Toast.makeText(this@SignUp, "Successfully Signed Up", Toast.LENGTH_SHORT).show()
-                                        val intent = Intent(this@SignUp, Login::class.java)
-                                        startActivity(intent)
-                                        finish()
+                        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        withContext(Dispatchers.Main) {
+                                            Toast.makeText(
+                                                this@SignUp,
+                                                "Successfully Signed Up",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            val intent = Intent(this@SignUp, Login::class.java)
+                                            startActivity(intent)
+                                            finish()
+                                        }
+                                    }
+                                } else {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        withContext(Dispatchers.Main) {
+                                            Toast.makeText(
+                                                this@SignUp,
+                                                it.exception.toString(),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
-                            }else{
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    withContext(Dispatchers.Main){
-                                        Toast.makeText(this@SignUp, it.exception.toString(), Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            }
 
-                            CoroutineScope(Dispatchers.Main).launch {
-                                withContext(Dispatchers.Main){
-                                    binding.signupmail.text.clear()
-                                    binding.signuppassword.text.clear()
-                                    binding.confirmsignuppass.text.clear()
-                                    binding.progressBar.visibility= View.GONE
-                                    binding.signupbtn.isEnabled = true
+                                val user = firebaseAuth.currentUser
+
+                                val profileUpdates = userProfileChangeRequest {
+                                    displayName = username
+                                }
+
+                                user!!.updateProfile(profileUpdates)
+
+
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    withContext(Dispatchers.Main) {
+                                        binding.signupmail.text.clear()
+                                        binding.signuppassword.text.clear()
+                                        binding.confirmsignuppass.text.clear()
+                                        binding.progressBar.visibility = View.GONE
+                                        binding.signupbtn.isEnabled = true
+                                    }
                                 }
                             }
-                        }
                     }
                 }
             } else {
@@ -84,7 +105,6 @@ class SignUp : AppCompatActivity() {
 
 
     }
-
 
 
 }

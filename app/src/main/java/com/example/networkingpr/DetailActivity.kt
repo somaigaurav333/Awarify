@@ -1,19 +1,13 @@
 package com.example.networkingpr
 
-import android.graphics.Bitmap
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
-import android.webkit.*
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ProgressBar
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.util.*
+import androidx.appcompat.app.AppCompatActivity
 
 class DetailActivity : AppCompatActivity() {
 
@@ -26,6 +20,7 @@ class DetailActivity : AppCompatActivity() {
 
 
         supportActionBar!!.hide()
+
 
         if (savedInstanceState == null) {
             val url = intent.getStringExtra("URL")
