@@ -8,7 +8,7 @@
 
   
 
-  <p align="justify">
+  <p align="center">
   <br>
   <br>
   <br>
