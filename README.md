@@ -12,6 +12,6 @@
   <br>
   <br>
   <br>
-    <img src="https://github.com/somaigaurav333/Awarify/assets/16974859/dcf5171a-7858-4817-be92-a187244ba5ce" height="768" width="420">
-    <img src="https://github.com/somaigaurav333/Awarify/assets/16974859/9c9540fd-0f65-4067-bbad-d71c2e6e4a3a" height="768" width="420">
+    <img src="https://github.com/somaigaurav333/Awarify/assets/16974859/dcf5171a-7858-4817-be92-a187244ba5ce" height="640" width="360">
+    <img src="https://github.com/somaigaurav333/Awarify/assets/16974859/9c9540fd-0f65-4067-bbad-d71c2e6e4a3a" height="640" width="360">
   </p>
