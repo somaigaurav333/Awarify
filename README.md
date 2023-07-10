@@ -1,4 +1,4 @@
-# news_app
+# Awarify
 
   I am trying to build an app using which people can view, share and comment on verified news. The news is currently being fetched from an API, https://newsapi.org/ (if anyone has better suggesstions, please do tell, because this API has a daily limit of 100 requests ;-;)
 
