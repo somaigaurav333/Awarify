@@ -5,12 +5,13 @@
 
   This is still a Work In Progress, and I have a long way to go, and a lot of stuff is yet to be implemented, but hopefully I will be able to do it properly. Attaching a screenshot of the main screen below-
   
-  
+
   
 
-  <p align="center">
+  <p align="justify">
   <br>
   <br>
   <br>
-<img src="https://user-images.githubusercontent.com/16974859/207464292-83be70ec-3323-4750-8e3e-b8df3925f3d3.jpg" height="768" width="420">
+    <img src="https://github.com/somaigaurav333/Awarify/assets/16974859/dcf5171a-7858-4817-be92-a187244ba5ce" height="768" width="420">
+    <img src="https://github.com/somaigaurav333/Awarify/assets/16974859/9c9540fd-0f65-4067-bbad-d71c2e6e4a3a" height="768" width="420">
   </p>
